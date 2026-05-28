@@ -41,31 +41,37 @@ const create = async (req, res) => {
       return res.status(400).json({ message: 'La cédula ya está registrada' });
     }
     
-    // Create empleado
+    // Generate QR data with cedula as stable ID (will be consistent across DB resets)
+    const qrData = {
+      id: cedula,  // Usar cédula como ID estable
+      cedula: cedula,
+      nombre: nombre_completo,
+      area: area || '',
+      cargo: cargo || ''
+    };
+    const qrDataString = JSON.stringify(qrData);
+    
+    // Create empleado with QR data
     const empleado = await Empleado.create({
       cedula,
       nombre_completo,
       area,
       cargo,
+      qr_data: qrDataString,
       activo: true
     });
     
-    // Generate QR data and image
-    const qrData = {
-      id: empleado.id,
-      cedula: empleado.cedula,
-      nombre: empleado.nombre_completo,
-      area: empleado.area,
-      cargo: empleado.cargo
-    };
-    const qrDataString = JSON.stringify(qrData);
-    const qrImageBase64 = await generateQR({ ...empleado.get(), nombre_completo: empleado.nombre_completo });
-    
-    // Update empleado with QR data
-    await empleado.update({
-      qr_data: qrDataString,
-      qr_imagen: qrImageBase64
+    // Generate QR code image as base64
+    const qrImageBase64 = await generateQR({
+      id: cedula,
+      cedula: cedula,
+      nombre_completo: nombre_completo,
+      area: area || '',
+      cargo: cargo || ''
     });
+    
+    // Update empleado with QR image
+    await empleado.update({ qr_imagen: qrImageBase64 });
     
     // Fetch updated empleado
     const updatedEmpleado = await Empleado.findByPk(empleado.id);
@@ -103,17 +109,25 @@ const update = async (req, res) => {
     
     await empleado.update(updateData);
     
-    // If any of the data that affects QR changed, regenerate QR
+    // If any of the data that affects QR changed, regenerate QR with cedula as stable ID
     if (cedula !== undefined || nombre_completo !== undefined || area !== undefined || cargo !== undefined) {
+      // Get the current values after update
+      const currentEmpleado = await Empleado.findByPk(empleado.id);
       const qrData = {
-        id: empleado.id,
-        cedula: empleado.cedula,
-        nombre: empleado.nombre_completo,
-        area: empleado.area,
-        cargo: empleado.cargo
+        id: currentEmpleado.cedula,  // Usar cédula como ID estable
+        cedula: currentEmpleado.cedula,
+        nombre: currentEmpleado.nombre_completo,
+        area: currentEmpleado.area || '',
+        cargo: currentEmpleado.cargo || ''
       };
       const qrDataString = JSON.stringify(qrData);
-      const qrImageBase64 = await generateQR({ ...empleado.get(), nombre_completo: empleado.nombre_completo });
+      const qrImageBase64 = await generateQR({
+        id: currentEmpleado.cedula,
+        cedula: currentEmpleado.cedula,
+        nombre_completo: currentEmpleado.nombre_completo,
+        area: currentEmpleado.area || '',
+        cargo: currentEmpleado.cargo || ''
+      });
       
       await empleado.update({
         qr_data: qrDataString,

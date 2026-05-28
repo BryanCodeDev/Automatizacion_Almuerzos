@@ -4,6 +4,7 @@ const verificarController = require('../controllers/verificar');
 
 // Rutas públicas (sin autenticación)
 router.post('/cedula', verificarController.verificarPorCedula);
+router.post('/cedula/registrar', verificarController.registrarPorCedula);
 
 // Rutas protegidas (con autenticación)
 const { authenticateToken } = require('../middlewares/auth');

@@ -212,31 +212,27 @@ const seedDatabase = async () => {
     ];
 
     for (const empleadoData of empleadosData) {
-      // Generate QR data JSON
+      // Generate QR data JSON using cedula as stable ID
       const qrData = {
-        id: null, // will be set after creation
+        id: empleadoData.cedula,  // Use cedula as stable ID
         cedula: empleadoData.cedula,
         nombre: empleadoData.nombre_completo,
         area: empleadoData.area,
         cargo: empleadoData.cargo
       };
 
-      // Create empleado without QR first
+      // Create empleado with QR data
       const empleado = await Empleado.create({
         ...empleadoData,
+        qr_data: JSON.stringify(qrData),
         activo: true
       });
 
-      // Update qrData with the actual id
-      qrData.id = empleado.id;
-      const qrDataString = JSON.stringify(qrData);
-
       // Generate QR code image as base64
-      const qrImageBase64 = await QRCode.toDataURL(qrDataString);
+      const qrImageBase64 = await QRCode.toDataURL(JSON.stringify(qrData));
 
-      // Update empleado with QR data and image
+      // Update empleado with QR image
       await empleado.update({
-        qr_data: qrDataString,
         qr_imagen: qrImageBase64
       });
 

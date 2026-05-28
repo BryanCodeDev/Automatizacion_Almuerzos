@@ -21,9 +21,11 @@ const escanear = async (req, res) => {
     
     const { id, cedula } = empleadoData;
     
-    // Find employee by id or cedula
+    // Find employee by id OR cedula (QR uses cedula as ID for consistency)
     const empleado = await Empleado.findOne({
-      where: { id, cedula, activo: true }
+      where: { 
+        [Op.or]: [{ id: String(cedula) || id }, { cedula }]
+      }
     });
     
     if (!empleado) {
@@ -171,9 +173,47 @@ const removeRegistro = async (req, res) => {
   }
 };
 
+const downloadTicket = async (req, res) => {
+  try {
+    const { ticket_codigo } = req.params;
+    
+    const registro = await RegistroAlmuerzo.findOne({
+      where: { ticket_codigo },
+      include: [{
+        model: Empleado,
+        attributes: ['id', 'nombre_completo', 'cedula', 'area', 'cargo']
+      }]
+    });
+    
+    if (!registro) {
+      return res.status(404).json({ message: 'Ticket no encontrado' });
+    }
+    
+    // Generate QR code as PNG image for download
+    const QRCode = require('qrcode');
+    const ticketData = {
+      ticket_codigo: registro.ticket_codigo,
+      empleado: registro.empleado.nombre_completo,
+      cedula: registro.empleado.cedula,
+      fecha: registro.fecha,
+      hora: registro.hora
+    };
+    
+    const qrImage = await QRCode.toBuffer(JSON.stringify(ticketData), { type: 'png', width: 300 });
+    
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Content-Disposition', `attachment; filename=ticket_${ticket_codigo}.png`);
+    res.send(qrImage);
+  } catch (error) {
+    console.error('Error in downloadTicket:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
 module.exports = {
   escanear,
   getHoy,
   getTicket,
-  removeRegistro
+  removeRegistro,
+  downloadTicket
 };

@@ -1,5 +1,6 @@
 -- Sistema de Gestión de Almuerzos Corporativos
 -- Script para poblar la tabla de empleados - Generado desde ReporteMaestroEmpleados 2026-05-27
+-- Incluye QR data con ID estable basado en la cédula
 
 USE almuerzos_db;
 
@@ -7,7 +8,7 @@ USE almuerzos_db;
 -- TRUNCATE TABLE empleados;
 
 -- INSERTAR EMPLEADOS
-INSERT INTO empleados (cedula, nombre_completo, area, cargo, activo) VALUES
+INSERT INTO empleados (cedula, nombre_completo, area, cargo, qr_data, activo) VALUES
 ('1032393941', 'Carlos Ivan Ladino Gil', 'ABASTECIMIENTO1', '', TRUE),
 ('35535867', 'Neydi Bustos Mahecha', 'ADMINISTRATIVA', '', TRUE),
 ('52356753', 'Yohana Esther Gil Perez', 'ADMINISTRATIVA', '', TRUE),
