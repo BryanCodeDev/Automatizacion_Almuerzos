@@ -70,8 +70,8 @@ const create = async (req, res) => {
       cargo: cargo || ''
     });
     
-    // Update empleado with QR image
-    await empleado.update({ qr_imagen: qrImageBase64 });
+    // Update empleado with QR image (strip data URL prefix for storage)
+    await empleado.update({ qr_imagen: qrImageBase64.replace('data:image/png;base64,', '') });
     
     // Fetch updated empleado
     const updatedEmpleado = await Empleado.findByPk(empleado.id);
@@ -129,10 +129,10 @@ const update = async (req, res) => {
         cargo: currentEmpleado.cargo || ''
       });
       
-      await empleado.update({
-        qr_data: qrDataString,
-        qr_imagen: qrImageBase64
-      });
+await empleado.update({
+         qr_data: qrDataString,
+         qr_imagen: qrImageBase64.replace('data:image/png;base64,', '')
+       });
     }
     
     const updatedEmpleado = await Empleado.findByPk(empleado.id);
@@ -170,9 +170,8 @@ const getQR = async (req, res) => {
       return res.status(404).json({ message: 'QR no generado' });
     }
     
-    // Return the base64 image (without data URL prefix for flexibility)
-    const base64 = empleado.qr_imagen.split(',')[1];
-    res.json({ qr_imagen: base64 });
+    // Return the base64 image (stored without data URL prefix)
+    res.json({ qr_imagen: empleado.qr_imagen });
   } catch (error) {
     console.error('Error in getQR:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
@@ -191,8 +190,7 @@ const descargarQR = async (req, res) => {
     }
     
     // Convert base64 to buffer and send as file
-    const base64 = empleado.qr_imagen.split(',')[1];
-    const buffer = Buffer.from(base64, 'base64');
+    const buffer = Buffer.from(empleado.qr_imagen, 'base64');
     
     res.setHeader('Content-Type', 'image/png');
     res.setHeader(

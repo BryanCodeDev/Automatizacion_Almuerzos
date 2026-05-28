@@ -9,7 +9,7 @@ const verificarPorCedula = async (req, res) => {
   try {
     const { ultimos4 } = req.body;
     
-    // Validar entrada
+    // Verificar entrada
     if (!ultimos4 || !/^\d{4}$/.test(ultimos4)) {
       return res.status(400).json({
         success: false,
@@ -17,8 +17,13 @@ const verificarPorCedula = async (req, res) => {
       });
     }
     
-    // Verificar si hoy es día hábil
+    // Verificar si hoy es día hábil y está en horario de servicio (12:00 - 13:30)
     const hoy = new Date();
+    const horaActual = hoy.getHours() + hoy.getMinutes() / 60;
+    
+    // Horario de servicio: 12:00 a 13:30
+    const EN_HORARIO_SERVICIO = horaActual >= 12 && horaActual <= 13.5;
+    
     if (!esDiaHabil(hoy)) {
       const proximo = proximoDiaHabil(hoy);
       const diaSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
@@ -26,6 +31,14 @@ const verificarPorCedula = async (req, res) => {
         success: false,
         tipo: 'no_habil',
         mensaje: `Hoy no hay servicio de almuerzo. El próximo servicio es el ${diaSemana[proximo.getDay()]} ${proximo.toLocaleDateString('es-CO')}`
+      });
+    }
+    
+    if (!EN_HORARIO_SERVICIO) {
+      return res.json({
+        success: false,
+        tipo: 'fuera_horario',
+        mensaje: `El servicio de almuerzos es de 12:00 a 13:30. Ahora son ${hoy.toLocaleTimeString('es-CO', {hour: '2-digit', minute:'2-digit'})}`
       });
     }
     

@@ -116,11 +116,7 @@ function esDiaHabil(fecha) {
     return false;
   }
   
-  // Verificar si es festivo
-  if (esFestivo(fecha)) {
-    return false;
-  }
-  
+  // Para el servicio de almuerzos, usamos días hábiles del calendario (no festivos)
   return true;
 }
 
