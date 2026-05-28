@@ -7,12 +7,20 @@ const RegistroAlmuerzo = sequelize.define('RegistroAlmuerzo', {
     primaryKey: true,
     autoIncrement: true
   },
+  empleado_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   fecha: {
     type: DataTypes.DATEONLY,
     allowNull: false
   },
   hora: {
     type: DataTypes.TIME,
+    allowNull: false
+  },
+  registrado_por: {
+    type: DataTypes.INTEGER,
     allowNull: false
   },
   ticket_codigo: {
