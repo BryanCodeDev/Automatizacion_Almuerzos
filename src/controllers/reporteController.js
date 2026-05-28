@@ -42,24 +42,22 @@ const getSemana = async (req, res) => {
         case 3: diaNombre = 'mié'; break;
         case 4: diaNombre = 'jue'; break;
         case 5: diaNombre = 'vie'; break;
-        case 6: diaNombre = 'sáb'; break;
+case 6: diaNombre = 'sáb'; break;
       }
       dias.push(diaNombre);
       fechaActual.setDate(fechaActual.getDate() + 1);
     }
     
-    // Build matrix: empleado_id -> { fecha: true/false }
     const matriz = {};
     const totales = {};
     
-    // For each employee, check each day in range
     for (const emp of empleados) {
       matriz[emp.id] = {};
       totales[emp.id] = 0;
       
-      const fechaActual = new Date(startDate);
+      let fechaActual = new Date(startDate);
       while (fechaActual <= endDate) {
-        const fechaStr = fechaActual.toISOString().slice(0, 10); // YYYY-MM-DD
+        const fechaStr = fechaActual.toISOString().slice(0, 10);
         const diaSemana = fechaActual.getDay();
         let diaNombre;
         switch (diaSemana) {
@@ -72,7 +70,6 @@ const getSemana = async (req, res) => {
           case 6: diaNombre = 'sáb'; break;
         }
         
-        // Check if there's a registro for this employee on this date
         const encontrado = await RegistroAlmuerzo.findOne({
           where: {
             empleado_id: emp.id,
@@ -190,7 +187,7 @@ const exportar = async (req, res) => {
       fechaActual.setDate(fechaActual.getDate() + 1);
     }
     
-const matriz = {};
+    const matriz = {};
     const totales = {};
     
     for (const emp of empleados) {
@@ -199,18 +196,18 @@ const matriz = {};
       
       let fechaActual = new Date(startDate);
       while (fechaActual <= endDate) {
-         const fechaStr = fechaActual.toISOString().slice(0, 10);
-         const diaSemana = fechaActual.getDay();
-         let diaNombre;
-         switch (diaSemana) {
-           case 0: diaNombre = 'dom'; break;
-           case 1: diaNombre = 'lun'; break;
-           case 2: diaNombre = 'mar'; break;
-           case 3: diaNombre = 'mié'; break;
-           case 4: diaNombre = 'jue'; break;
-           case 5: diaNombre = 'vie'; break;
-           case 6: diaNombre = 'sáb'; break;
-         }
+        const fechaStr = fechaActual.toISOString().slice(0, 10);
+        const diaSemana = fechaActual.getDay();
+        let diaNombre;
+        switch (diaSemana) {
+          case 0: diaNombre = 'dom'; break;
+          case 1: diaNombre = 'lun'; break;
+          case 2: diaNombre = 'mar'; break;
+          case 3: diaNombre = 'mié'; break;
+          case 4: diaNombre = 'jue'; break;
+          case 5: diaNombre = 'vie'; break;
+          case 6: diaNombre = 'sáb'; break;
+        }
         
         const encontrado = await RegistroAlmuerzo.findOne({
           where: {

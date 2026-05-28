@@ -157,11 +157,37 @@ const getQR = async (req, res) => {
     }
     
     // Return the base64 image (without data URL prefix for flexibility)
-    // We'll return just the base64 string
-    const base64 = empleado.qr_imagen.split(',')[1]; // Remove data:image/png;base64,
+    const base64 = empleado.qr_imagen.split(',')[1];
     res.json({ qr_imagen: base64 });
   } catch (error) {
     console.error('Error in getQR:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+const descargarQR = async (req, res) => {
+  try {
+    const empleado = await Empleado.findByPk(req.params.id);
+    if (!empleado) {
+      return res.status(404).json({ message: 'Empleado no encontrado' });
+    }
+    
+    if (!empleado.qr_imagen) {
+      return res.status(404).json({ message: 'QR no generado' });
+    }
+    
+    // Convert base64 to buffer and send as file
+    const base64 = empleado.qr_imagen.split(',')[1];
+    const buffer = Buffer.from(base64, 'base64');
+    
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=QR_${empleado.nombre_completo.replace(/\s+/g, '_')}.png`
+    );
+    res.send(buffer);
+  } catch (error) {
+    console.error('Error in descargarQR:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
@@ -200,5 +226,6 @@ module.exports = {
   update,
   remove,
   getQR,
+  descargarQR,
   exportar
 };
