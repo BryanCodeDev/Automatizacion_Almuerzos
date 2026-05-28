@@ -239,10 +239,9 @@ const downloadTicket = async (req, res) => {
     });
     
     ctx.fillText('ACCESO: AUTORIZADO', 30, 60);
-    ctx.fillText(`NOMBRE: ${empleado ? empleado.nombre_completo : 'N/A'}`, 30, 85);
-    ctx.fillText(`CC: ${empleado ? empleado.cedula : 'N/A'}`, 30, 110);
-    ctx.fillText(`FECHA: ${fechaHora}`, 30, 135);
-    ctx.fillText(`CÓDIGO: ${registro.ticket_codigo}`, 30, 160);
+    ctx.fillText(`NOMBRE: ${empleado ? empleado.nombre_completo : 'N/A'}`, 30, 95);
+    ctx.fillText(`CC: ${empleado ? empleado.cedula : 'N/A'}`, 30, 130);
+    ctx.fillText(`FECHA: ${fechaHora}`, 30, 165);
     
     // Convert to PNG
     const buffer = canvas.toBuffer('image/png');
