@@ -15,11 +15,13 @@ const empleadoRoutes = require('./routes/empleadoRoutes');
 const registroRoutes = require('./routes/registroRoutes');
 const reporteRoutes = require('./routes/reporteRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const verificarRoutes = require('./routes/verificar');
 const { authenticateToken } = require('./middlewares/auth');
 const { authorizeRole } = require('./middlewares/role');
 
 // Public routes
 app.use('/api/auth', authRoutes);
+app.use('/api/verificar', verificarRoutes);
 
 // Protected routes
 app.use('/api/empleados', authenticateToken, empleadoRoutes);
