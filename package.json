@@ -1,0 +1,36 @@
+{
+  "name": "almuerzos-server",
+  "version": "1.0.0",
+  "description": "Backend para el sistema de gestión de almuerzos corporativos",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "migrate": "node src/utils/migrate.js",
+    "seed": "node src/utils/seed.js"
+  },
+  "keywords": [
+    "almuerzos",
+    "corporativos",
+    "qr",
+    "nodejs",
+    "express",
+    "sequelize"
+  ],
+  "author": "Sistema de Gestión de Almuerzos",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sequelize": "^6.32.1",
+    "mysql2": "^3.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "qrcode": "^1.5.3",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
