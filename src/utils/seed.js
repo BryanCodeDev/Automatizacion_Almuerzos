@@ -50,24 +50,6 @@ const seedDatabase = async () => {
 
     const operadorUsers = [
       { nombre: 'Yohana Gil', email: 'yohana.gil@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Area De Calidad', email: 'analista.calidad@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Blanca Marcelo', email: 'jefe.bodegapt@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Gabriela Juyo', email: 'comercioexterior@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Heylen Naranjo', email: 'planeacion1@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Eliana Granados', email: 'analista.mercadeo@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Alvaro Chimbi', email: 'alvaro.chimbi@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Kelly Villareal', email: 'analista.talentohumano@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Cristian Enciso', email: 'callcenter1@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Nelson Vargas', email: 'servicioalcliente3@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Ambiental', email: 'gestionambiental@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Pilar Chaurra', email: 'tesoreria@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Luz Stella Dueñas', email: 'luz.stella@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Juan David Mejia', email: 'juan.mejia@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Sebastian Quintero', email: 'sebastian.quintero@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Sergio Pinzon', email: 'sergio.pinzon@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Yarid Corpas', email: 'yarid.corpas@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Liseth Gomez', email: 'liseth.gomez@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true },
-      { nombre: 'Jairo Lozano', email: 'jairo.lozano@duvyclass.co', password_hash: operadorHash, rol: 'operador', activo: true }
     ];
 
     await UsuarioSistema.bulkCreate([...adminUsers, ...operadorUsers]);
