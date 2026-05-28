@@ -17,12 +17,8 @@ const verificarPorCedula = async (req, res) => {
       });
     }
     
-    // Verificar si hoy es día hábil y está en horario de servicio (12:00 - 13:30)
+    // Verificar si hoy es día hábil
     const hoy = new Date();
-    const horaActual = hoy.getHours() + hoy.getMinutes() / 60;
-    
-    // Horario de servicio: 12:00 a 13:30
-    const EN_HORARIO_SERVICIO = horaActual >= 12 && horaActual <= 13.5;
     
     if (!esDiaHabil(hoy)) {
       const proximo = proximoDiaHabil(hoy);
@@ -33,15 +29,7 @@ const verificarPorCedula = async (req, res) => {
         mensaje: `Hoy no hay servicio de almuerzo. El próximo servicio es el ${diaSemana[proximo.getDay()]} ${proximo.toLocaleDateString('es-CO')}`
       });
     }
-    
-    if (!EN_HORARIO_SERVICIO) {
-      return res.json({
-        success: false,
-        tipo: 'fuera_horario',
-        mensaje: `El servicio de almuerzos es de 12:00 a 13:30. Ahora son ${hoy.toLocaleTimeString('es-CO', {hour: '2-digit', minute:'2-digit'})}`
-      });
-    }
-    
+
     // Buscar empleados cuya cédula termine en esos 4 dígitos
     const empleados = await Empleado.findAll({
       where: {
@@ -85,6 +73,7 @@ const verificarPorCedula = async (req, res) => {
       },
       include: [{
         model: Empleado,
+        as: 'empleado',
         attributes: ['id', 'nombre_completo', 'cedula', 'area', 'cargo']
       }]
     });
@@ -132,15 +121,8 @@ const registrarPorCedula = async (req, res) => {
     
     // Verificar si hoy es día hábil
     const hoy = new Date();
-    if (!esDiaHabil(hoy)) {
-      const proximo = proximoDiaHabil(hoy);
-      const diaSemana = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-      return res.json({
-        success: false,
-        tipo: 'no_habil',
-        mensaje: `Hoy no hay servicio de almuerzo. El próximo servicio es el ${diaSemana[proximo.getDay()]} ${proximo.toLocaleDateString('es-CO')}`
-      });
-    }
+
+    // Eliminado: restriction de horario para permitir registro en cualquier momento
     
     let empleado;
     

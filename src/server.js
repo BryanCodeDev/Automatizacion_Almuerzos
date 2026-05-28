@@ -28,6 +28,7 @@ app.use('/api/registros/ticket', require('./routes/ticketRoutes')); // Public ti
 app.use('/api/empleados', authenticateToken, empleadoRoutes);
 app.use('/api/registros', authenticateToken, registroRoutes);
 app.use('/api/reportes', authenticateToken, reporteRoutes);
+app.use('/api/tickets', require('./routes/ticketRoutes'));
 app.use('/api/usuarios', authenticateToken, authorizeRole('admin'), usuarioRoutes);
 
 // Health check
