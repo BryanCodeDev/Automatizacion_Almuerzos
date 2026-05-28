@@ -21,28 +21,13 @@ const escanear = async (req, res) => {
     
     const { id, cedula } = empleadoData;
     
-    // Find employee by QR id (cedula) OR cedula field
-    // El QR usa la cédula como ID estable, buscamos primero por ese ID
+    // Buscar empleado: el QR contiene id=cedula (como string), buscar primero por cedula
     const empleado = await Empleado.findOne({
       where: { 
-        [Op.or]: [
-          { id: String(id) },  // Búsqueda por ID del QR (normalmente la cédula)
-          { cedula: id },       // Si id es numérico y cedula es string
-          { cedula: String(id) }  // Por seguridad
-        ],
+        cedula: String(id) || cedula,
         activo: true
       }
     });
-    
-    // Si no se encontró y id es igual a cedula, buscar solo por cedula
-    if (!empleado && id === cedula) {
-      const empleado2 = await Empleado.findOne({
-        where: { cedula, activo: true }
-      });
-      if (empleado2) {
-        return empleado2;
-      }
-    }
     
     if (!empleado) {
       return res.status(404).json({ 
