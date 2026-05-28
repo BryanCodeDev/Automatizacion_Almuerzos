@@ -20,14 +20,15 @@
   "author": "Sistema de Gestión de Almuerzos",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "sequelize": "^6.32.1",
-    "mysql2": "^3.6.0",
-    "jsonwebtoken": "^9.0.2",
     "bcryptjs": "^2.4.3",
+    "canvas": "^3.2.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.0",
     "qrcode": "^1.5.3",
+    "sequelize": "^6.32.1",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

@@ -195,22 +195,61 @@ const downloadTicket = async (req, res) => {
       return res.status(404).json({ message: 'Ticket no encontrado' });
     }
     
-    // Generate QR code as PNG image for download
-    const QRCode = require('qrcode');
+    // Generate ticket image with text info
+    const { createCanvas } = require('canvas');
     const empleado = registro.empleado;
-    const ticketData = {
-      ticket_codigo: registro.ticket_codigo,
-      empleado: empleado ? empleado.nombre_completo : 'Empleado no encontrado',
-      cedula: empleado ? empleado.cedula : '',
-      fecha: registro.fecha,
-      hora: registro.hora
-    };
     
-    const qrImage = await QRCode.toBuffer(JSON.stringify(ticketData), { type: 'png', width: 300 });
+    // Dimensions: ticket size 300x200 pixels
+    const width = 300;
+    const height = 200;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext('2d');
+    
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Border
+    ctx.strokeStyle = '#4f46e5';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(2, 2, width - 4, height - 4);
+    
+    // Title
+    ctx.fillStyle = '#4f46e5';
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('TICKET ALMUERZO', width / 2, 25);
+    
+    // Separator line
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(20, 35);
+    ctx.lineTo(width - 20, 35);
+    ctx.stroke();
+    
+    // Info text
+    ctx.fillStyle = '#1f2937';
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'left';
+    
+    const fechaHora = new Date().toLocaleDateString('es-CO') + ' ' + new Date().toLocaleTimeString('es-CO', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+    ctx.fillText('ACCESO: AUTORIZADO', 30, 60);
+    ctx.fillText(`NOMBRE: ${empleado ? empleado.nombre_completo : 'N/A'}`, 30, 85);
+    ctx.fillText(`CC: ${empleado ? empleado.cedula : 'N/A'}`, 30, 110);
+    ctx.fillText(`FECHA: ${fechaHora}`, 30, 135);
+    ctx.fillText(`CÓDIGO: ${registro.ticket_codigo}`, 30, 160);
+    
+    // Convert to PNG
+    const buffer = canvas.toBuffer('image/png');
     
     res.setHeader('Content-Type', 'image/png');
     res.setHeader('Content-Disposition', `attachment; filename=ticket_${ticket_codigo}.png`);
-    res.send(qrImage);
+    res.send(buffer);
   } catch (error) {
     console.error('Error in downloadTicket:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
