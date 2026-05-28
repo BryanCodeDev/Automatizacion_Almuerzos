@@ -1,166 +1,77 @@
 const QRCode = require('qrcode');
+const fs = require('fs');
 
-// Empleados del archivo empleados.sql (148 empleados)
-const empleados = [
-  ['1032393941', 'Carlos Ivan Ladino Gil', 'ABASTECIMIENTO1'],
-  ['35535867', 'Neydi Bustos Mahecha', 'ADMINISTRATIVA'],
-  ['52356753', 'Yohana Esther Gil Perez', 'ADMINISTRATIVA'],
-  ['52487003', 'Soraida Londoño Cardenas', 'ADMINISTRATIVA'],
-  ['52094741', 'Aida Sofia Malagon Salamanca', 'ADMINISTRATIVA'],
-  ['1420919', 'Petra Alicia Martinez Villanueva', 'ADMINISTRATIVA'],
-  ['52177808', 'Maria De La Paz Millan Mendez', 'ADMINISTRATIVA'],
-  ['1016014239', 'Solanyi Lucia Monroy Cabrera', 'ADMINISTRATIVA'],
-  ['24212871', 'Marleny Moreno Romero', 'ADMINISTRATIVA'],
-  ['1073155317', 'Bryan Santiago Muñoz Romero', 'ADMINISTRATIVA'],
-  ['1073244873', 'Jhon Fredy Reyes Espinel', 'ADMINISTRATIVA'],
-  ['52481551', 'Amparo Matallana Perez', 'ADMINISTRATIVO Y FINANCIERO1'],
-  ['1192814507', 'Kevin Santiago Redondo Aristizabal', 'AUDITORIA INTERNA'],
-  ['1030531434', 'Javier Armando Ríos Concha', 'AUDITORIA INTERNA'],
-  ['52662914', 'Gloria Stella Arangure Garcia', 'BODEGA MP'],
-  ['11256495', 'Carlos Arturo Gomez Fuentes', 'BODEGA MP'],
-  ['1070988483', 'Ximena Morales Garcia', 'BODEGA MP'],
-  ['1073507535', 'Jeisson Arley Pulido Rodriguez', 'BODEGA MP'],
-  ['1073503435', 'Jennifer Alejandra Rodriguez Sanchez', 'BODEGA MP'],
-  ['1014236677', 'Diego Humberto Rojas Cuervo', 'BODEGA MP'],
-  ['1073130021', 'Sandra Milena Bernal Rocha', 'BODEGA PT'],
-  ['1073241838', 'Johan Alejandro Cortes Vargas', 'BODEGA PT'],
-  ['1002493799', 'Abel Eduardo Estrada Viloria', 'BODEGA PT'],
-  ['79055548', 'Leonardo Fabio Gutierrez Cendales', 'BODEGA PT'],
-  ['1097332138', 'Cesar Fernando Hernandez', 'BODEGA PT'],
-  ['1070781479', 'Carlos Ivan Muñoz Giral', 'BODEGA PT'],
-  ['7251993', 'William Humberto Muñoz Ramirez', 'BODEGA PT'],
-  ['1024516097', 'Jhon Jairo Nieto Gantiva', 'BODEGA PT'],
-  ['79698527', 'Fabio Ortiz Vega', 'BODEGA PT'],
-  ['80178507', 'Franklin Perez Pinzon', 'BODEGA PT'],
-  ['1073670980', 'Leider Andres Quintero Riveros', 'BODEGA PT'],
-  ['1002337930', 'Cristian Ferney Romero Rios', 'BODEGA PT'],
-  ['1115913495', 'Yeison Camilo Tafur Farfan', 'BODEGA PT'],
-  ['1078368751', 'Johan Alexander Tenjo Torres', 'BODEGA PT'],
-  ['1073176281', 'Ingrid Natalia Vanegas Romero', 'BODEGA PT'],
-  ['51899504', 'Luz Stella Dueñas Alfaro', 'CALL CENTER'],
-  ['1073511770', 'Cristhian Esneider Enciso Jimenez', 'CALL CENTER'],
-  ['1006617085', 'Alberto Manuel Cordoba Gonzalez', 'CONTROL DE CALIDAD'],
-  ['1024559925', 'Luisa Fernanda Duarte Gonzalez', 'CONTROL DE CALIDAD'],
-  ['1065602996', 'Yeidis Sandrith Hernández Carrillo', 'CONTROL DE CALIDAD'],
-  ['1070942503', 'Astrit Viviana Lopez Cardenas', 'CONTROL DE CALIDAD'],
-  ['33366332', 'Andrea Del Pilar Morales Chaparro', 'CONTROL DE CALIDAD'],
-  ['1097332381', 'Sergio Mauricio Pinzon Ariza', 'CONTROL DE CALIDAD'],
-  ['1192802694', 'Juan Pablo Ramos Gutierrez', 'CONTROL DE CALIDAD'],
-  ['1023163282', 'Sebastian Torres Lopez', 'CONTROL DE CALIDAD'],
-  ['1007596531', 'Luz Alejandra Valbuena Daza', 'CONTROL DE CALIDAD'],
-  ['1049372473', 'David Santiago Estupiñan Betancourt', 'DEVOLUCIONES - PLANEACION Y FACTURACION'],
-  ['1018484211', 'Maribel Munevar Lemus', 'DEVOLUCIONES - PLANEACION Y FACTURACION'],
-  ['1070329666', 'Heylen Astrid Naranjo Ortiz', 'DEVOLUCIONES - PLANEACION Y FACTURACION'],
-  ['1073150153', 'Andres Ivan Pastor Hastamorir', 'DEVOLUCIONES - PLANEACION Y FACTURACION'],
-  ['1102804105', 'Sharoll Sther Peñafiel Perez', 'DEVOLUCIONES - PLANEACION Y FACTURACION'],
-  ['80059397', 'Alexis Ramirez Pinzon', 'DEVOLUCIONES - PLANEACION Y FACTURACION'],
-  ['1073251925', 'Diego Enrique Vargas Juyo', 'DEVOLUCIONES - PLANEACION Y FACTURACION'],
-  ['1033706622', 'Dana Julieta Bello Tovar', 'DIRECCIÓN COMPRAS'],
-  ['51897304', 'Maria Fanny Herrera Guerrero', 'DIRECCIÓN COMPRAS'],
-  ['1073254373', 'Laura Yorleny Ruge Piamonte', 'DIRECCIÓN COMPRAS'],
-  ['1025322086', 'Yarid Maryori Corpas Algarra', 'DIRECCIÓN CONTABLE'],
-  ['1073252460', 'Liseth Tatiana Gomez Reyes', 'DIRECCIÓN CONTABLE'],
-  ['1070627642', 'Jairo Alejandro Lozano Doncel', 'DIRECCIÓN CONTABLE'],
-  ['1004623878', 'Jose Danilo Luna Enríquez', 'DIRECCIÓN CONTABLE'],
-  ['1073504725', 'Flor Stella Martinez Heredia', 'DIRECCIÓN CONTABLE'],
-  ['1011097125', 'Laura Sofia Peñuela Figueredo', 'DIRECCIÓN CONTABLE'],
-  ['1002726944', 'Jimena Lilibet Ponguta Gaitan', 'DIRECCIÓN CONTABLE'],
-  ['1070975620', 'Camilo Eduardo Sierra Rincon', 'DIRECCIÓN CONTABLE'],
-  ['20739954', 'Martha Cecilia Acosta Ramirez', 'DIRECCIÓN DE CARTERA'],
-  ['1001329101', 'Juan Camilo Alvarez Mora', 'DIRECCIÓN DE CARTERA'],
-  ['1006839365', 'Miler Cristobal Contento Garcia', 'DIRECCIÓN DE CARTERA'],
-  ['1019984638', 'Wendy Lorena Contreras Aldana', 'DIRECCIÓN DE CARTERA'],
-  ['1033691101', 'Juan Carlos Cuevas Delgado', 'DIRECCIÓN DE CARTERA'],
-  ['1005229688', 'Carlos Alonso Gamez Toro', 'DIRECCIÓN DE CARTERA'],
-  ['1015452078', 'Sandra Milena Guerrero Anaya', 'DIRECCIÓN DE CARTERA'],
-  ['80255679', 'Edisson Yovani Diaz Muñoz', 'DIRECCIÓN DE MERCADEO'],
-  ['1140917916', 'Maryori Alejandra Enciso Romero', 'DIRECCIÓN DE MERCADEO'],
-  ['52475251', 'Elizabeth Gonzalez Villamil', 'DIRECCIÓN DE MERCADEO'],
-  ['1001340501', 'Eliana Marcela Granados Loaiza', 'DIRECCIÓN DE MERCADEO'],
-  ['1003688511', 'Alison Nardayi Bejarano Molina', 'DIRECCIÓN DE VENTAS'],
-  ['85450050', 'Alexandro Ernesto Cabrera Villamizar', 'DIRECCIÓN DE VENTAS'],
-  ['53031628', 'Astrid Johanna Castillo Lopez', 'DIRECCIÓN DE VENTAS'],
-  ['1073692362', 'Rudt Yanira Cifuentes Franco', 'DIRECCIÓN DE VENTAS'],
-  ['1015452522', 'Andres Felipe Bautista Barreto', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['45529641', 'Muriel Paola Cogollo Sepulveda', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['51910876', 'Alba Luz Cruz Mahecha', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['1003483330', 'Yuliana Alexandra Leal Calderon', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['1004322323', 'Lina Marcela Mejia Barros', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['53061629', 'Nely Andrea Urrego', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['23323985', 'Gisella Margarita Valderrama Guzman', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['1031140743', 'Kelly Johana Villarreal Martinez', 'DIRECCIÓN GESTIÓN HUMANA'],
-  ['53006429', 'Martha Carolina Calderon Amortegui', 'DIRECCIÓN TÉCNICA'],
-  ['1031542382', 'Felipe Alejandro Castellanos Caicedo', 'DIRECCIÓN TÉCNICA'],
-  ['52728492', 'Nini Johanna Perez', 'DIRECCIÓN TÉCNICA'],
-  ['39763899', 'Nubia Alibeth Villabona Pinilla', 'DIRECCIÓN TÉCNICA'],
-  ['7229322', 'Jorge Alberto Ballesteros Cely', 'FABRICACION'],
-  ['1072446359', 'Nelson Andres Barreto Penagos', 'FABRICACION'],
-  ['11366363', 'Diego Andres Carrasco Rodriguez', 'FABRICACION'],
-  ['23783927', 'Gina Gabriela Castro', 'FABRICACION'],
-  ['52325677', 'Monica Herrera', 'FABRICACION'],
-  ['1000520127', 'Johan Esteban Lopez Romero', 'FABRICACION'],
-  ['1024509901', 'Gustavo Fredy Parra Romero', 'FABRICACION'],
-  ['24713157', 'Mirta Yasmin Soler Pedreros', 'FABRICACION'],
-  ['1007912102', 'Gabriela Juyo Saavedra', 'GERENCIA GENERAL1'],
-  ['1001299553', 'Juan Felipe Antia Velasco', 'GESTION AMBIENTAL'],
-  ['1025461346', 'Johan Stiven Diaz Jimenez', 'MANTENIMIENTO'],
-  ['80013470', 'Fredy Alberto Garzon Tovar', 'MANTENIMIENTO'],
-  ['7695541', 'Ermes Tapia Cruz', 'MANTENIMIENTO'],
-  ['1193121162', 'Gerson Fernando Marin Ramirez', 'OXY CREMA'],
-  ['1071579359', 'Celmira Alarcon Melo', 'PLANTA'],
-  ['1073508049', 'Camilo Andres Bello Parada', 'PLANTA'],
-  ['30937308', 'Martha Ruby Bernal Rodríguez', 'PLANTA'],
-  ['35535889', 'Flor Angelica Bosiga Diaz', 'PLANTA'],
-  ['1007156369', 'Alexandra Cajamarca Cruz', 'PLANTA'],
-  ['1073233628', 'Angely Nicol Calderón Boada', 'PLANTA'],
-  ['1025143687', 'Sharon Camila Camargo Sanabria', 'PLANTA'],
-  ['53077850', 'Neidy Brigitte Caranton Avila', 'PLANTA'],
-  ['80283233', 'Juan Alvaro Chimbi Bedoya', 'PLANTA'],
-  ['1073250932', 'Anyi Paola Cristiano Pinzon', 'PLANTA'],
-  ['53931705', 'Jeimy Yamile Cuervo Mahecha', 'PLANTA'],
-  ['52664001', 'Luz Dary Estupiñan Albarracin', 'PLANTA'],
-  ['1073238648', 'Nury Jazmin Gamboa Beltran', 'PLANTA'],
-  ['1073245727', 'Karen Viviana Molina Leon', 'PLANTA'],
-  ['11366979', 'Albeiro Muñoz Ballesteros', 'PLANTA'],
-  ['52455488', 'Sandra Mayiber Orjuela Sabogal', 'PLANTA'],
-  ['79765229', 'Diego Fernando Ortiz Moreno', 'PLANTA'],
-  ['1073230926', 'Francy Nathaly Peña Barrera', 'PLANTA'],
-  ['1004418223', 'Dayana Plazas Fonseca', 'PLANTA'],
-  ['1016083760', 'Jefferson Steven Primiciero Andrade', 'PLANTA'],
-  ['1073502461', 'Sandra Milena Ramos Duarte', 'PLANTA'],
-  ['46458117', 'Diana Esmeralda Reyes Parra', 'PLANTA'],
-  ['1073509807', 'Andrea Catherine Rincon Sarmiento', 'PLANTA'],
-  ['79855193', 'Jhon Steve Rodriguez', 'PLANTA'],
-  ['52781135', 'Liliana Sanabria Beltran', 'PLANTA'],
-  ['35393232', 'Nidia Cecilia Suarez Robayo', 'PLANTA'],
-  ['52664656', 'Monica Andrea Tapiero Calderon', 'PLANTA'],
-  ['20859982', 'Nancy Vargas Gaona', 'PLANTA'],
-  ['7719037', 'Yovanny Vigoya Sanabria', 'PLANTA'],
-  ['1101175723', 'Cristian Saul Ardila Zafra', 'PRODUCCION1'],
-  ['79707608', 'Jader David Manjarres Buelvas', 'SERVICIO AL CLIENTE'],
-  ['79753750', 'Nelson Armando Vargas Florez', 'SERVICIO AL CLIENTE'],
-  ['52438506', 'Maria Del Pilar Chaurra Alvarez', 'TESORERÍA1']
-];
+// Leer el archivo empleados.sql original
+const empleadosSql = fs.readFileSync('./empleados.sql', 'utf8');
+const lines = empleadosSql.split('\n');
 
-const generateQRForEmpleado = (cedula, nombre, area, cargo) => {
-  const qrData = {
+// Extraer empleados del SQL (líneas que empiezan con '(')
+const empleados = [];
+let inInsert = false;
+
+lines.forEach(line => {
+  if (line.includes('INSERT INTO empleados')) {
+    inInsert = true;
+    return;
+  }
+  if (inInsert && line.trim().startsWith('(')) {
+    // Extraer datos: ('cedula', 'nombre', 'area', 'cargo', TRUE)
+    const match = line.match(/\('([^']+)',\s*'([^']+)',\s*'([^']*)',\s*'([^']*)',\s*TRUE\)/);
+    if (match) {
+      empleados.push({
+        cedula: match[1],
+        nombre: match[2],
+        area: match[3],
+        cargo: match[4]
+      });
+    }
+  }
+});
+
+console.log(`Encontrados ${empleados.length} empleados`);
+
+// Función para generar QR data
+const generateQRData = (cedula, nombre, area, cargo) => {
+  return JSON.stringify({
     id: String(cedula),
     cedula: String(cedula),
     nombre: nombre,
-    area: area,
-    cargo: cargo
-  };
-  return JSON.stringify(qrData);
+    area: area || '',
+    cargo: cargo || ''
+  });
 };
 
-// Generar QR data para todos los empleados
-console.log('-- Script para generar QR DATA consistente basado en cédula');
-console.log('-- Los IDs en el QR son la cédula misma, por lo que son estables');
-console.log('');
+// Generar SQL actualizado
+let sqlOutput = `-- Sistema de Gestión de Almuerzos Corporativos
+-- Script para poblar la tabla de empleados - Generado desde ReporteMaestroEmpleados 2026-05-27
+-- Incluye QR data con ID estable basado en la cédula
 
-empleados.forEach(([cedula, nombre, area]) => {
-  const qrData = generateQRForEmpleado(cedula, nombre, area, '');
-  // Escapar comillas simples para SQL
+USE almuerzos_db;
+
+-- Eliminar datos existentes (opcional, para ejecutar en limpio)
+-- TRUNCATE TABLE empleados;
+
+-- INSERTAR EMPLEADOS
+INSERT INTO empleados (cedula, nombre_completo, area, cargo, qr_data, activo) VALUES
+`;
+
+empleados.forEach((emp, index) => {
+  const qrData = generateQRData(emp.cedula, emp.nombre, emp.area, emp.cargo);
   const qrDataEscapado = qrData.replace(/'/g, "''");
-  console.log(`-- QR data: ${qrDataEscapado.substring(0, 80)}...`);
+  const isLast = index === empleados.length - 1;
+  sqlOutput += `('${emp.cedula}', '${emp.nombre}', '${emp.area}', '${emp.cargo}', '${qrDataEscapado}', TRUE)${isLast ? ';' : ','}\n`;
 });
+
+// Guardar archivo
+fs.writeFileSync('./empleados_qr.sql', sqlOutput);
+console.log('Archivo generado: empleados_qr.sql');
+
+// Si se quiere generar imágenes QR, descomentar:
+// async function generarImagenes() {
+//   for (const emp of empleados) {
+//     const qrData = generateQRData(emp.cedula, emp.nombre, emp.area, emp.cargo);
+//     const qrImage = await QRCode.toDataURL(qrData);
+//     console.log(`QR generado para ${emp.nombre}`);
+//   }
+// }
+// generarImagenes();
