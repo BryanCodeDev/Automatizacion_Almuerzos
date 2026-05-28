@@ -22,6 +22,7 @@ const { authorizeRole } = require('./middlewares/role');
 // Public routes
 app.use('/api/auth', authRoutes);
 app.use('/api/verificar', verificarRoutes);
+app.use('/api/registros/ticket', require('./routes/ticketRoutes')); // Public ticket download
 
 // Protected routes
 app.use('/api/empleados', authenticateToken, empleadoRoutes);

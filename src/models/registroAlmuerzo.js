@@ -21,7 +21,7 @@ const RegistroAlmuerzo = sequelize.define('RegistroAlmuerzo', {
   },
   registrado_por: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   ticket_codigo: {
     type: DataTypes.STRING(20),
@@ -35,5 +35,4 @@ const RegistroAlmuerzo = sequelize.define('RegistroAlmuerzo', {
   updatedAt: false
 });
 
-// Associations will be defined in index.js or after all models are loaded
 module.exports = RegistroAlmuerzo;

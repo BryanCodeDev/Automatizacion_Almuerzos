@@ -85,6 +85,7 @@ const escanear = async (req, res) => {
     const registroConEmpleado = await RegistroAlmuerzo.findByPk(registro.id, {
       include: [{
         model: Empleado,
+        as: 'empleado',
         attributes: ['id', 'nombre_completo', 'cedula', 'area', 'cargo']
       }]
     });
@@ -119,6 +120,7 @@ const getHoy = async (req, res) => {
       },
       include: [{
         model: Empleado,
+        as: 'empleado',
         attributes: ['id', 'nombre_completo', 'cedula', 'area', 'cargo']
       }],
       order: [['hora', 'DESC']]
@@ -139,6 +141,7 @@ const getTicket = async (req, res) => {
       where: { ticket_codigo },
       include: [{
         model: Empleado,
+        as: 'empleado',
         attributes: ['id', 'nombre_completo', 'cedula', 'area', 'cargo']
       }]
     });
@@ -182,6 +185,8 @@ const downloadTicket = async (req, res) => {
       where: { ticket_codigo },
       include: [{
         model: Empleado,
+        required: false,
+        as: 'empleado',
         attributes: ['id', 'nombre_completo', 'cedula', 'area', 'cargo']
       }]
     });
@@ -192,10 +197,11 @@ const downloadTicket = async (req, res) => {
     
     // Generate QR code as PNG image for download
     const QRCode = require('qrcode');
+    const empleado = registro.empleado;
     const ticketData = {
       ticket_codigo: registro.ticket_codigo,
-      empleado: registro.empleado.nombre_completo,
-      cedula: registro.empleado.cedula,
+      empleado: empleado ? empleado.nombre_completo : 'Empleado no encontrado',
+      cedula: empleado ? empleado.cedula : '',
       fecha: registro.fecha,
       hora: registro.hora
     };
